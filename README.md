@@ -28,5 +28,3 @@ Cada pasta de laboratório contém seu próprio `README.md` detalhado com:
 
 ---
 *Este repositório é mantido de forma contínua como portfólio prático de estudos para a certificação AWS SAA-C03.*
-*Este repositório é mantido de forma contínua como portfólio prático de estudos para a certificação AWS SAA-C03.*
-# aws-saa-labs
