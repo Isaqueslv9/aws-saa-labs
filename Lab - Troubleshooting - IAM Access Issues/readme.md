@@ -1,6 +1,5 @@
-# 🛠️ AWS Lab: Resolução de Falha de Acesso no IAM com Roles e Menor Privilégio
+# AWS Lab: Resolução de Falha de Acesso no IAM com Roles e Menor Privilégio
 
-> **Curso:** AWS Certified Solutions Architect - Associate (SAA-C03) — Escola da Nuvem  
 > **Domínio 1:** Design Secure Architectures (Acesso e Identidade)  
 > **Serviços Utilizados:** AWS IAM, AWS STS, AWS Systems Manager (SSM), Amazon EC2  
 > **Conceitos Aplicados:** Identity Policies, Trust Policies, `sts:AssumeRole`, Principle of Least Privilege, Scenario Break-Fix  
@@ -34,10 +33,6 @@ Ao analisar o ambiente com um usuário de administração (`AWSLabUser`), foram 
 1. **Falha na Identity Policy (Autorização de Saída):** O `Operator-User` não possuía uma política baseada em identidade dando permissão explícita para chamar a ação `sts:AssumeRole` direcionada à `Operator-Role`.
 2. **Falha na Trust Policy (Relação de Confiança):** A *Trust Policy* (política de confiança) anexada à `Operator-Role` não listava o `Operator-User` como um *Principal* autorizado a assumir a função.
 
-![02 - Identity Policy Ajustada](./img/02-identity-policy-sts.png)
-
-
-
 
 ---
 
@@ -48,9 +43,17 @@ Para resolver o incidente aplicando rigorosamente o **Princípio do Menor Privil
 ### 1. Atualização da Identity Policy do Usuário
 Anexou-se uma política ao `Operator-User` que concede acesso restrito à ação `sts:AssumeRole`, apontando **exclusivamente para o ARN da `Operator-Role`**:
 
+![02 - Identity Policy Ajustada](./img/02-identity-policy-sts.png)
+
+### 2. Atualização da Trust Policy da Role
+
+Para garantir a cadeia de autorização no lado da Role e aplicar rigorosamente o **Princípio do Menor Privilégio (*Least Privilege*)**, ajustou-se a *Trust Policy* (Relação de Confiança) anexada à `Operator-Role`. 
+
+A política foi configurada declarando o ARN exato do `Operator-User` como o único **Principal** autorizado a invocar a ação `sts:AssumeRole`:
+
 ![03 - Trust Policy Ajustada](./img/03-trust-policy-role.png)
 
-## ✅ Validação da Solução (Sucesso)
+## Validação da Solução (Sucesso)
 
 Para comprovar a resolução definitiva do problema, os passos de validação foram executados diretamente no Console de Gerenciamento da AWS:
 
