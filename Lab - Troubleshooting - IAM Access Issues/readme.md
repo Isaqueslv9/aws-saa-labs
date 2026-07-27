@@ -22,7 +22,7 @@ A equipe de nuvem da empresa configurou um novo operador (`Operator-User`) que p
 
 **O Problema:** Ao tentar realizar a troca de função (*Switch Role*) no Console de Gerenciamento da AWS, o `Operator-User` recebia a seguinte mensagem de erro, ficando impossibilitado de trabalhar:
 
-![01 - Erro ao tentar trocar de função](./img/01-erro-switch-role.png)
+![1 - Erro ao tentar trocar de função](./img/01-erro-switch-role.png)
 
 ---
 
@@ -43,7 +43,7 @@ Para resolver o incidente aplicando rigorosamente o **Princípio do Menor Privil
 ### 1. Atualização da Identity Policy do Usuário
 Anexou-se uma política ao `Operator-User` que concede acesso restrito à ação `sts:AssumeRole`, apontando **exclusivamente para o ARN da `Operator-Role`**:
 
-![02 - Identity Policy Ajustada](./img/02-identity-policy-sts.png)
+![2 - Identity Policy Ajustada](./img/02-identity-policy-sts.png)
 
 ### 2. Atualização da Trust Policy da Role
 
@@ -51,7 +51,7 @@ Para garantir a cadeia de autorização no lado da Role e aplicar rigorosamente 
 
 A política foi configurada declarando o ARN exato do `Operator-User` como o único **Principal** autorizado a invocar a ação `sts:AssumeRole`:
 
-![03 - Trust Policy Ajustada](./img/03-trust-policy-role.png)
+![3 - Trust Policy Ajustada](./img/03-trust-policy-role.png)
 
 ## Validação da Solução (Sucesso)
 
@@ -61,6 +61,6 @@ Para comprovar a resolução definitiva do problema, os passos de validação fo
 2. **Troca de Perfil (Switch Role):** No menu do usuário (canto superior direito), selecionou-se a opção **Mudar de função**, preenchendo o ID da conta AWS (`AWSAccountID`) e o nome do perfil (`Operator-Role`).
 3. **Confirmação da Assunção de Função:** A requisição foi processada com sucesso via **AWS STS**, redirecionando a sessão para a página inicial da conta.
 
-![04 - Sucesso ao assumir a Role](./img/04-sucesso-operator-role.png)
+![4 - Sucesso ao assumir a Role](./img/04-sucesso-operator-role.png)
 
 > **Resultado Esperado e Obtido:** O canto superior direito do Console passou a exibir o nome do perfil ativo **`Operator-Role @ ACCOUNT_ID`**, confirmando que o usuário está operando com permissões temporárias e pronto para gerenciar a instância `CommandHost` via AWS Systems Manager (SSM).
