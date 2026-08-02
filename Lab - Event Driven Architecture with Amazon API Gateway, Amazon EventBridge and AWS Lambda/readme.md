@@ -92,6 +92,27 @@ Para validar a arquitetura fim a fim:
 
 ---
 
+## Estudo: Quando e Por Que Usar Esta Arquitetura?
+
+### O Problema do Modelo Tradicional (Monolito/Síncrono)
+Em um sistema tradicional de pedidos, os serviços chamam uns aos outros diretamente de forma síncrona:
+* **Efeito Dominó:** Se o serviço de entrega falhar, toda a cadeia de checkout pode travar e o pedido não é aceito.
+* **Gargalo no Banco de Dados (Polling):** Para atualizar o status na tela do cliente, o aplicativo precisa fazer requisições HTTP a cada poucos segundos (`polling`), sobrecarregando os servidores e o banco de dados.
+* **Alto Custo Ocioso:** Servidores mantidos ligados 24/7 esperando por chamadas em horários de baixo movimento.
+
+### Como esta Arquitetura Orientada a Eventos (EDA) Resolve o Problema
+
+1. **Desacoplamento e Resiliência (EventBridge):**
+   * O EventBridge atua como um roteador pub/sub. Se a função de entrega (`deliver_pizza`) falhar, o pedido ainda é recebido e processado na cozinha normalmente. A mensagem permanece no barramento para reprocessamento.
+2. **Padrão Fan-Out (Trabalho Paralelo):**
+   * Uma única emissão de evento pode acionar múltiplos serviços simultaneamente (ex: processar o pedido e notificar o cliente via WebSocket ao mesmo tempo) sem que um serviço precise conhecer o outro.
+3. **Eficiência e Baixa Latência (WebSockets):**
+   * Em vez do cliente perguntar constantemente *"O pedido mudou de status?"*, o API Gateway WebSocket mantém um canal aberto de baixo custo, enviando dados ao front-end apenas quando um evento realmente acontece.
+4. **Custo Zero em Ociosidade (Serverless):**
+   * Toda a infraestrutura escala de zero até milhares de requisições por segundo automaticamente. Sem pedidos trafegando, o custo mantido na AWS é nulo.
+
+   ---
+
 ## Aprendizados para a Certificação SAA
 
 * **Desacoplamento:** O EventBridge elimina a necessidade de microsserviços chamarem uns aos outros diretamente de forma síncrona.
